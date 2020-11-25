@@ -92,6 +92,7 @@ namespace simb{
     kDiffractive               =   11,
     kEM                        =   12,
     kWeakMix                   =   13,
+    kDarkNC                    =   14,
     kNuanceOffset              = 1000,                ///< offset to account for adding in Nuance codes to this enum
     kCCQE                      = kNuanceOffset +  1,  ///< charged current quasi-elastic
     kNCQE                      = kNuanceOffset +  2,  ///< neutral current quasi-elastic
