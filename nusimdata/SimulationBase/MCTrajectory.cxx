@@ -21,13 +21,13 @@
 namespace simb {
 
   // Nothing special need be done for the default constructor or destructor.
-  MCTrajectory::MCTrajectory() 
+  MCTrajectory::MCTrajectory()
     : ftrajectory()
   {}
 
   //----------------------------------------------------------------------------
-  MCTrajectory::MCTrajectory( const TLorentzVector& position, 
-			      const TLorentzVector& momentum )
+  MCTrajectory::MCTrajectory( const TLorentzVector& position,
+                              const TLorentzVector& momentum )
   {
     ftrajectory.push_back( value_type( position, momentum ) );
   }
@@ -72,22 +72,22 @@ namespace simb {
 
     // A simple header.
     output.width( numberOfDigits );
-    output << "#" << ": < position (x,y,z,t), momentum (Px,Py,Pz,E) >" << std::endl; 
+    output << "#" << ": < position (x,y,z,t), momentum (Px,Py,Pz,E) >" << std::endl;
 
     // Write each trajectory point on a separate line.
     MCTrajectory::size_type nTrajectory = 0;
     for ( MCTrajectory::const_iterator trajectory = list.begin(); trajectory != list.end(); ++trajectory, ++nTrajectory ){
         output.width( numberOfDigits );
         output << nTrajectory << ": "
-	       << "< (" << (*trajectory).first.X() 
-	       << "," << (*trajectory).first.Y() 
-	       << "," << (*trajectory).first.Z() 
-	       << "," << (*trajectory).first.T() 
-	       << ") , (" << (*trajectory).second.Px() 
-	       << "," << (*trajectory).second.Py() 
-	       << "," << (*trajectory).second.Pz() 
-	       << "," << (*trajectory).second.E() 
-	       << ") >" << std::endl;
+               << "< (" << (*trajectory).first.X()
+               << "," << (*trajectory).first.Y()
+               << "," << (*trajectory).first.Z()
+               << "," << (*trajectory).first.T()
+               << ") , (" << (*trajectory).second.Px()
+               << "," << (*trajectory).second.Py()
+               << "," << (*trajectory).second.Pz()
+               << "," << (*trajectory).second.E()
+               << ") >" << std::endl;
       }
 
     return output;
@@ -97,7 +97,7 @@ namespace simb {
   unsigned char MCTrajectory::ProcessToKey(std::string const& process) const
   {
     unsigned char key = 0;
-    
+
     if     (process.compare("hadElastic")       == 0) key = 1;
     else if(process.compare("pi-Inelastic")     == 0) key = 2;
     else if(process.compare("pi+Inelastic")     == 0) key = 3;
@@ -109,15 +109,15 @@ namespace simb {
     else if(process.compare("nCapture")         == 0) key = 9;
     else if(process.compare("Transportation") == 0)
       key = 10;
-    
+
     return key;
   }
-  
+
   //----------------------------------------------------------------------------
   std::string MCTrajectory::KeyToProcess(unsigned char const& key) const
   {
     std::string process("Unknown");
-    
+
     if     (key == 1) process = "hadElastic";
     else if(key == 2) process = "pi-Inelastic";
     else if(key == 3) process = "pi+Inelastic";
@@ -128,10 +128,10 @@ namespace simb {
     else if(key == 8) process = "CoulombScat";
     else if(key == 9) process = "nCapture";
     else if(key == 10) process = "Transportation";
-    
+
     return process;
   }
-  
+
   //----------------------------------------------------------------------------
   void MCTrajectory::Add(TLorentzVector const& p,
                          TLorentzVector const& m,
@@ -141,18 +141,18 @@ namespace simb {
     // add the the momentum and position, then get the location of the added
     // bits to store the process
     this->push_back(p, m);
-    
+
     size_t insertLoc = ftrajectory.size() - 1;
-    
+
     auto key = this->ProcessToKey(process);
-    
+
     // only add a process to the list if it is defined, ie one of the values
     // allowed in the ProcessToKey() method
     //
     // Also, keep 10 (transportation) if the flag allows
     if(key > 0 && (key != 10 || keepTransportation))
       fTrajectoryProcess.push_back(std::make_pair(insertLoc, key));
-    
+
     return;
   }
 
@@ -198,7 +198,7 @@ namespace simb {
 
       // Should never have been given a degenerate range
       if(hiIdx < loIdx+2)
-        throw cet::exception("MCTrajectory") << "Degnerate range in Sparsify method";
+        throw cet::exception("MCTrajectory") << "Degenerate range in Sparsify method";
 
       const TVector3 loVec = at(loIdx).first.Vect();
       const TVector3 hiVec = at(hiIdx).first.Vect();
@@ -213,7 +213,7 @@ namespace simb {
         const double impact = (toHere-dir.Dot(toHere)*dir).Mag2();
         if(impact > margin){ok = false; break;}
       }
-      
+
       if(ok){
         // These points adequately represent this range
         done.insert(loIdx);
@@ -263,7 +263,7 @@ namespace simb {
 
     // make a new process map as well based on these points
     ProcessMap newProcMap;
-    
+
     for(auto idx : done){
       newTraj.push_back(at(idx));
       if(processMap.count(idx) > 0){
@@ -279,7 +279,7 @@ namespace simb {
     // Replace trajectory and fTrajectoryProcess with new versions
     std::swap(ftrajectory,        newTraj   );
     std::swap(fTrajectoryProcess, newProcMap);
-    
+
     return;
   }
 
